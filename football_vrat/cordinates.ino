@@ -28,10 +28,10 @@ void coordinates() {
   //  const float minDist = 0;
   //  const float maxDist = 210;
 
-  forward_dist = blue_dist;//blue_dist
-  backward_dist = yel_dist;//yel_dist
-  forward_angle = blue_angle;//blue_angle
-  backward_angle = yel_angle;//yel_angle
+  forward_dist = yel_dist;//blue_dist
+  backward_dist = blue_dist;//yel_dist
+  forward_angle = yel_angle;//blue_angle
+  backward_angle = blue_angle;//yel_angle
 
   abs_ball_angle = lead_to_degree_borders(ball_cam_angle + corAng);
   abs_forward_angle = lead_to_degree_borders(forward_angle + corAng);

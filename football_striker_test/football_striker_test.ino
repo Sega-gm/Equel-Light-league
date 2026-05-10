@@ -14,14 +14,17 @@ Adafruit_BNO055 bno = Adafruit_BNO055(-1, 0x29, &Wire);
 //коэффициенты
 #define KP 0.8  //Пропрц.коэф.
 #define KD 20.0 //Диф.коэф. 
-#define KPX 0.25 //0.22
-#define KPY 0.35 //0.35
-//#define KPX2 0.35 //0.22
-//#define KPY2 0.30 //0.35 
-#define KDX 1.05
-const float YzeroFront = 30;
-const float XzeroRight = 35;
-//const float Yzero = 34;
+#define KC 0.0001//Куб.коэф.
+
+
+const int right_out2G = 80;
+const int left_out2G = -78;
+const int right_out1G = 55;
+const int left_out1G = -57;
+int right_out = 0;
+int left_out = 0;
+const int forward_out = 40;
+const int backward_out = 40;
 
 //Порты управления цопами
 #define ADDR_P1 29
@@ -50,23 +53,23 @@ const float XzeroRight = 35;
 //led 30 24 22
 //Порты управления моторами
 
-#define M1_1 10
-#define M1_2 12
-#define M2_1 9
-#define M2_2 11
-#define M3_1 6
-#define M3_2 8
-#define M4_1 5
-#define M4_2 7
-
-//#define M1_1 12
-//#define M1_2 10
-//#define M2_1 11
-//#define M2_2 9
-//#define M3_1 8
-//#define M3_2 6
+//#define M1_1 10
+//#define M1_2 12
+//#define M2_1 9
+//#define M2_2 11
+//#define M3_1 6
+//#define M3_2 8
 //#define M4_1 5
 //#define M4_2 7
+
+#define M1_1 12
+#define M1_2 10
+#define M2_1 11
+#define M2_2 9
+#define M3_1 8
+#define M3_2 6
+#define M4_1 5
+#define M4_2 7
 //Порт управления солиноидом
 #define pinsolin 31
 
@@ -115,7 +118,6 @@ double _data, angK, distK;
 
 float abs_forward_angle;
 float abs_backward_angle;
-float abs_ball_angle;
 
 float x_forward;
 float y_forward;
@@ -136,38 +138,23 @@ float yy;
 //80 110
 //-70 110
 int OneGate_Out_KofX;
-const int right_out = 60;
-const int left_out = -60;
-const int forward_out = 185;
-const int backward_out = 30;
 
-const int spdMinX = 0;
-const int spdMinY = 0;
-const int spdMaxX = 10;
-const int spdMaxY = 15;
 
 float out_angle;
-bool flagOne = true;
+bool flagOne = false;
 bool kickDel = false;
 bool flagOneGate = false;
 bool flagOut = false;
 bool flagKick = false;
+bool flagKickPosition = false;
+bool driblerON = false;
 const int ir_addr3[32] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 31, 30, 29, 28, 24, 25, 26, 27};
 int ball_data[32];
 float d_alpha = 11.25;
 float ball_ts_angle, ball_ts_dist;
 
 float spdGLK;
-float angle_gate_ball;
 float alphaGLK;
-float angle_gate;
-float angle_gate_ball_old;
-float spdX;
-float spdY;
-float spdX2;
-float spdY2;
-float alphaY;
-float alphaX;
 float ball_cam_angle;
 byte switchT_C;
 float ball_cam_dist;
@@ -255,7 +242,7 @@ void setup() {
   while ((gyroTimer - t0) < 5000) {
     gyroTimer = millis();   // без повторного объявления типа
     gyro();
-    digitalWrite(LED_BUILTIN, millis() % 200 > 100);
+    //digitalWrite(LED_BUILTIN, millis() % 200 > 100);
     //Serial.println(gyroTimer);
   }
   gyroTimer = 0;
@@ -308,6 +295,7 @@ void setup() {
 void loop() {
   while (flagStart == true) {
     goAngle(0, 0, 0);
+    dribler(0);
     digitalWrite(22, HIGH);
     digitalWrite(24, LOW);
     if (digitalRead(BUT2) == 0) {
@@ -321,9 +309,9 @@ void loop() {
   digitalWrite(22, HIGH);
   digitalWrite(24, LOW);
 #if OTLADKA==0
-
+  digitalWrite(LED_BUILTIN, millis() % 1000 > 500);
   updates();
-  //tactic();
+  tactic();
 
 
   //outs();
@@ -382,13 +370,16 @@ void loop() {
   //  Serial.print("  ");
   //  Serial.println("1241");
 #elif OTLADKA==6
-  //  for (int pos = 800; pos <= 1630; pos += 1)
-  //  {
-  dribblerESC.writeMicroseconds(1620);
-  //delay(20);
-  //Serial.println(pos);
-  //  }
-
+  updates();
+  if (ball_cam_dist <= 20) {
+    dribler(1615);
+    driblerON = true;
+  }
+  
+  else if (ball_retention <= 3 || (driblerON == true && ball_cam_dist == 0)) {
+    dribler(1620);
+  }
+  else if (ball_cam_dist > 20 && ball_cam_dist != 0) {dribler(0);driblerON = false;}
 #elif OTLADKA==7
   readSensors();
   Serial.print("ball_retention");
@@ -439,7 +430,8 @@ void loop() {
 #endif
 
   if (digitalRead(BUT3) == 0 && flagStart == false) {
-
+    gyro();
+    errAngleGyro = angleGyro;
     flagStart = true;
     Serial.println("Stop");
   }
