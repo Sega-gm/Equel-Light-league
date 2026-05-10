@@ -126,8 +126,8 @@
 void tactic() {
   if (flagOut == false) {
     if (flagBadZone == true) {
-      if (x < 0) goAngle(145, corAng, 110);
-      else goAngle(-145, corAng, 110);
+      if (x < 0) goAngle(180, corAng, 110);
+      else goAngle(-180, corAng, 110);
     }
     else if (ball_retention <= 3) goAngle(0, forward_angle, 110);
     else if (abs(lead_to_degree_borders(ball_cam_angle)) <= 10) {

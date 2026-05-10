@@ -31,7 +31,7 @@ void KickPosition(){
     flagKickPosition = false;
     flagBadZone = true;
   }
-  else if (forward_dist > 65) flagKickPosition = false;
+  else if (forward_dist > 65 && abs(forward_angle) > 65) flagKickPosition = false;
   else {flagKickPosition = true; flagBadZone = false;}
     
   
