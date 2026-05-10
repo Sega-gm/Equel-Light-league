@@ -19,7 +19,7 @@ void updates() {
   //    }
   //goalkeaper
   if (flagOut == false) {
-
+    //45645666666
     //x position
     angle_gate = lead_to_degree_borders(abs_backward_angle + 180);
     angle_gate_ball = lead_to_degree_borders(abs_ball_angle - angle_gate);
