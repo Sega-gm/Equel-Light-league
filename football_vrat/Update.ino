@@ -17,9 +17,9 @@ void updates() {
   //Serial.print("  ");
   //    Serial.print(spdX);
   Serial.print("  ||  ");
-  Serial.print(spdY2);
+  Serial.print(spdY);
   Serial.print("  ");
-  Serial.print(spdX2);
+  Serial.print(spdX);
   Serial.print("  ||  ");
   Serial.print(spdGLK);
   Serial.print("  ");

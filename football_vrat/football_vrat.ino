@@ -27,10 +27,10 @@ const int left_out1G = -57;
 int right_out = 0;
 int left_out = 0;
 
-const int forward_out = 40;
-const int backward_out = 40;
+const int forward_out = 15;
+const int backward_out = 15;
 
-const float YzeroFront = 30;
+const float YzeroFront = 35;
 const float XzeroRight = 35;
 //const float Yzero = 34;
 

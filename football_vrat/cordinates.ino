@@ -54,7 +54,7 @@ void coordinates() {
 }
 void outs() {
   if ((right_out <= x) || (left_out >= x) || (backward_out >= backward_dist && backward_dist != 0) || (forward_out >= forward_dist && forward_dist != 0)) { //
-    flagOut = true;
+    //flagOut = true;
 
     if (left_out >= x) {
       out_angle = 90;
