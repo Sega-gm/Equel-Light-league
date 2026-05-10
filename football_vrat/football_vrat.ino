@@ -19,6 +19,17 @@ Adafruit_BNO055 bno = Adafruit_BNO055(-1, 0x29, &Wire);
 //#define KPX2 0.35 //0.22
 //#define KPY2 0.30 //0.35 
 #define KDX 1.05
+
+const int right_out2G = 80;
+const int left_out2G = -78;
+const int right_out1G = 55;
+const int left_out1G = -57;
+int right_out = 0;
+int left_out = 0;
+
+const int forward_out = 40;
+const int backward_out = 40;
+
 const float YzeroFront = 30;
 const float XzeroRight = 35;
 //const float Yzero = 34;
@@ -49,7 +60,7 @@ const float XzeroRight = 35;
 
 //led 30 24 22
 //Порты управления моторами
-
+//черный
 #define M1_1 10
 #define M1_2 12
 #define M2_1 9
@@ -59,6 +70,7 @@ const float XzeroRight = 35;
 #define M4_1 5
 #define M4_2 7
 
+//зеленый
 //#define M1_1 12
 //#define M1_2 10
 //#define M2_1 11
@@ -136,10 +148,6 @@ float yy;
 //80 110
 //-70 110
 int OneGate_Out_KofX;
-const int right_out = 60;
-const int left_out = -60;
-const int forward_out = 185;
-const int backward_out = 30;
 
 const int spdMinX = 0;
 const int spdMinY = 0;
@@ -323,10 +331,10 @@ void loop() {
 #if OTLADKA==0
 
   updates();
-  //tactic();
+  tactic();
 
 
-  //outs();
+
 
   //
 #elif OTLADKA==1

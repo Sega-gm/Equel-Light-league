@@ -25,14 +25,19 @@ void polar_dek(float longsX, float alphaX, float longsY, float alphaY) {
   else alphaGLK = lead_to_degree_borders(atan2(sum_y, sum_x) * 180.0 / PI);
 }
 void coordinates() {
-  //  const float minDist = 0;
-  //  const float maxDist = 210;
-
-  forward_dist = yel_dist;//blue_dist
-  backward_dist = blue_dist;//yel_dist
-  forward_angle = yel_angle;//blue_angle
-  backward_angle = blue_angle;//yel_angle
-
+  int sideGame = 0;
+  if (sideGame == 1) {
+    forward_dist = blue_dist ;//blue_dist
+    backward_dist = yel_dist;//yel_dist
+    forward_angle = blue_angle;//blue_angle
+    backward_angle = yel_angle;//yel_angle
+  } else {
+    forward_dist = yel_dist ;//blue_dist
+    backward_dist = blue_dist;//yel_dist
+    forward_angle = yel_angle;//blue_angle
+    backward_angle = blue_angle;//yel_angle
+  }
+  
   abs_ball_angle = lead_to_degree_borders(ball_cam_angle + corAng);
   abs_forward_angle = lead_to_degree_borders(forward_angle + corAng);
   abs_backward_angle = lead_to_degree_borders(backward_angle + corAng);
@@ -43,47 +48,22 @@ void coordinates() {
   y_forward =  230 - forward_dist * cosf(abs_forward_angle * DEG2RAD);
   y_backward = -backward_dist * cosf(abs_backward_angle * DEG2RAD);
 
-  //bool visForward = forward_dist > constrain(forward_dist, minDist, maxDist);
-  //bool visBackward = backward_dist > constrain(backward_dist, minDist, maxDist);
-
-  //if (forward_dist == 0) {
   Correct_coef = (backward_dist) / (2 * 230);
   x = (x_backward * (1 - Correct_coef));
   y = (y_backward * (1 - Correct_coef));
-
-  //    flagOneGate = true;
-  //    //    Serial.println("back");
-  //  }
-  //  else if (backward_dist == 0) {
-  //    Correct_coef = (forward_dist) / (2 * 230);
-  //    x = (x_forward * (1 - Correct_coef));
-  //    y = (y_forward * (1 - Correct_coef));
-  //
-  //    flagOneGate = true;
-  //    //    Serial.println("for");
-  //  }
-  //  else {
-  //    Correct_coef = (backward_dist - forward_dist) / (2 * (forward_dist + backward_dist));
-  //    x = (x_forward * Correct_coef) + (x_backward * (1 - Correct_coef));
-  //    y = (y_forward * Correct_coef) + (y_backward * (1 - Correct_coef));
-  //    flagOneGate = false;
-  //    //    Serial.println(" 2gate ");
-  //  }
-  //  if (flagOneGate == false) OneGate_Out_KofX = 0;
-  //  else if (flagOneGate == true) OneGate_Out_KofX = 10; //10
 }
 void outs() {
-  if ((right_out - OneGate_Out_KofX) <= x || (left_out + OneGate_Out_KofX)) { //  || backward_out >= y || forward_out <= y) >= x
-    //flagOut = true;
+  if ((right_out <= x) || (left_out >= x) || (backward_out >= backward_dist && backward_dist != 0) || (forward_out >= forward_dist && forward_dist != 0)) { //
+    flagOut = true;
 
-    if ((left_out + OneGate_Out_KofX) >= x) {
+    if (left_out >= x) {
       out_angle = 90;
     }
-    else if ((right_out - OneGate_Out_KofX) <= x) {
+    else if (right_out <= x) {
       out_angle = 270;
     }
-    //    else if (backward_out >= y) out_angle = 0;
-    //    else if (forward_out <= y)  out_angle = 180;
+    else if (backward_out >= backward_dist && backward_dist != 0) out_angle = 0;//Serial.println("back");
+    else if (forward_out >= forward_dist && forward_dist != 0)  out_angle = 180;//Serial.println("for");
   }
   else flagOut = false;
 }
