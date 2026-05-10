@@ -125,21 +125,20 @@
 
 void tactic() {
   if (flagOut == false) {
-    
-    if(ball_retention <= 3) goAngle(0, forward_angle, 110);
+    if (flagBadZone == true) {
+      if (x < 0) goAngle(145, corAng, 110);
+      else goAngle(-145, corAng, 110);
+    }
+    else if (ball_retention <= 3) goAngle(0, forward_angle, 110);
     else if (abs(lead_to_degree_borders(ball_cam_angle)) <= 10) {
       goAngle(ball_cam_angle, forward_angle, 110);
       //Serial.println(" for1 ");
     }
-//    else if(flagKickPosition == false){
-//      if (x < 0) goAngle(145, corAng, 110);
-//      else goAngle(-145, corAng, 110);
-//    }
     else {
 
       if (ball_cam_dist > 35) {
         //Serial.println(" Dist ");
-        
+
         goAngle(ball_cam_angle, forward_angle, 110);
       }
       else {
@@ -150,7 +149,7 @@ void tactic() {
           goAngle(lead_to_degree_borders(ball_cam_angle - exponential_detour(lead_to_degree_borders(ball_cam_angle), ball_cam_dist, 0.63, 0.35, 0.45, 0.8)), forward_angle, 107);
       }
     }
-    if (flagKick == true && /*flagKickPosition == true &&*/forward_dist <= 65 && ball_retention <= 3 && (millis() - timer_kick) >= 5000) {//
+    if (flagKick == true && flagKickPosition == true && ball_retention <= 3 && (millis() - timer_kick) >= 5000) {//
       kick();
       flagKick = false;
       timer_kick = millis();
@@ -163,7 +162,6 @@ void tactic() {
     }
     else if (ball_cam_dist <= 22) dribler(1615);
     else dribler(0);
-    //test
   }
   else if (flagOut == true) {
     goAngle(out_angle, corAng, 110);

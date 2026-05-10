@@ -8,7 +8,6 @@
 
 Servo dribblerESC;
 //MPU6050 mpu;
-//test
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 Adafruit_BNO055 bno = Adafruit_BNO055(-1, 0x29, &Wire);
 //коэффициенты
@@ -148,6 +147,7 @@ bool flagOut = false;
 bool flagKick = false;
 bool flagKickPosition = false;
 bool driblerON = false;
+bool flagBadZone = false;
 const int ir_addr3[32] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 31, 30, 29, 28, 24, 25, 26, 27};
 int ball_data[32];
 float d_alpha = 11.25;
