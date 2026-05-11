@@ -17,7 +17,7 @@ Adafruit_BNO055 bno = Adafruit_BNO055(-1, 0x29, &Wire);
 #define KPX 0.25 //0.22
 #define KPY 0.35 //0.35
 //#define KPX2 0.35 //0.22
-//#define KPY2 0.30 //0.35 
+#define KPY2 0.71 //0.35 
 #define KDX 1.05
 
 const int right_out2G = 80;

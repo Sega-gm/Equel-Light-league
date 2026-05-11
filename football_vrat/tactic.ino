@@ -6,7 +6,9 @@ void tactic() {//ворота ->мяч
     angle_gate_ball = lead_to_degree_borders(abs_ball_angle - angle_gate);
     spdX = angle_gate_ball * KPX + KDX * (angle_gate_ball - angle_gate_ball_old);
     angle_gate_ball_old = angle_gate_ball;
-    spdY = float(YzeroFront - y) * KPY;
+    if(abs(x) >= 24 && (abs(x) <= 30)) 
+      spdY = float(YzeroFront - y) * KPY2;
+    else spdY = float(YzeroFront - y) * KPY;
     //spdX = constrain(spdX, spdMinX, spdMaxX);
     //spdY = constrain(spdY, spdMinY, spdMaxY);
     //vector
@@ -18,7 +20,7 @@ void tactic() {//ворота ->мяч
 
 
     //    goAngle(lead_to_degree_borders(alphaGLK - corAng), lead_to_degree_borders(0 - corAng), spdGLK)
-    if (abs(x) > 26){
+    if (abs(x) > 30){
       if(x > 0) goAngle(-90, 0, 104);
       else goAngle(90, 0, 104);
     }
