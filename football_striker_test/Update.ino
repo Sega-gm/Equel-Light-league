@@ -8,8 +8,9 @@ void updates() {
   coordinates();
   kick_Del();
   KickPosition();
+  //GoBall_short();
   outs();
-
+  
 
   Serial.print(lead_to_degree_borders(ball_cam_angle));
   Serial.print("  ||  ");

@@ -17,12 +17,12 @@ Adafruit_BNO055 bno = Adafruit_BNO055(-1, 0x29, &Wire);
 
 
 const int right_out2G = 80;
-const int left_out2G = -78;
+const int left_out2G = -65;
 const int right_out1G = 55;
-const int left_out1G = -57;
+const int left_out1G = -55;
 int right_out = 0;
 int left_out = 0;
-const int forward_out = 40;
+const int forward_out = 37;
 const int backward_out = 40;
 
 //Порты управления цопами
@@ -148,17 +148,19 @@ bool flagKick = false;
 bool flagKickPosition = false;
 bool driblerON = false;
 bool flagBadZone = false;
+bool flagShortBall = false;
 const int ir_addr3[32] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 31, 30, 29, 28, 24, 25, 26, 27};
 int ball_data[32];
 float d_alpha = 11.25;
 float ball_ts_angle, ball_ts_dist;
-
+float Priority_Angle;
 float spdGLK;
 float alphaGLK;
 float ball_cam_angle;
 byte switchT_C;
 float ball_cam_dist;
 bool flagStart = true;
+int spdSHR;
 
 int State = 0;
 /*
@@ -296,6 +298,8 @@ void loop() {
   while (flagStart == true) {
     goAngle(0, 0, 0);
     dribler(0);
+    gyro();
+    errAngleGyro = angleGyro;
     digitalWrite(22, HIGH);
     digitalWrite(24, LOW);
     if (digitalRead(BUT2) == 0) {
@@ -430,8 +434,7 @@ void loop() {
 #endif
 
   if (digitalRead(BUT3) == 0 && flagStart == false) {
-    gyro();
-    errAngleGyro = angleGyro;
+    
     flagStart = true;
     Serial.println("Stop");
   }

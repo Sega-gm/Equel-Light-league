@@ -26,18 +26,13 @@ double convert_dist(double max_dist, double dist)
 int16_t exponential_detour(double ball_angle, double distance, double k1_angle, double k2_angle, double k1_dist, double k2_dist)
 {
   angK = k1_angle * pow(ec, double(k2_angle * abs(ball_angle)));
-  Serial.print(" ");
-//  Serial.print(angK);
-//  Serial.print(" ");
   if(angK > 90)
     angK = 90;
   
   distance = convert_dist(4, distance);
-//  Serial.print(distance);
-//  Serial.print(" ");
+
   distK = k1_dist * pow(ec, double(k2_dist * distance));
-//  Serial.print(distK);
-//  Serial.print(" ");
+
   if(distK > 1)
     distK = 1;
   
@@ -47,4 +42,14 @@ int16_t exponential_detour(double ball_angle, double distance, double k1_angle, 
     _data = -angK * distK;
   
   return _data;//возращает угол на который надо ехать
+}
+void GoBall_short(){
+  if(ball_retention > 5 && ball_cam_dist <= 10 && abs(lead_to_degree_borders(ball_cam_angle)) <= 5){
+    flagShortBall = true;
+    Priority_Angle = ball_cam_angle;
+  }
+  else{
+    flagShortBall = false;
+    Priority_Angle = forward_angle;
+  }
 }
