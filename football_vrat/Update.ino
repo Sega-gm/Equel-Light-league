@@ -9,6 +9,7 @@ void updates() {
   coordinates();
   kick_Del();
   outs();
+  tmrSTRK();
   //    Serial.print(angle_gate);
   //    Serial.print("  ");
   Serial.print(abs_backward_angle);
