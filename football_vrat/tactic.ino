@@ -55,22 +55,23 @@ void tactic() {//ворота ->мяч
   else flagCentr = false;
   angle_gate = lead_to_degree_borders(abs_backward_angle + 180);
   angle_gate_ball = lead_to_degree_borders(abs_ball_angle - angle_gate);
-  float delta = lead_to_degree_borders(angle_gate_ball - angle_gate_ball_old);
-//  if (!flagZeroGate) {
-//    if (abs(delta) >= 20) {
-//      GoFor = false;
-//      wasMoving = true;
-//    }
-//    else {
-//      GoFor = true;
-//      if (wasMoving) {
-//        timer_goForward = millis();
-//        wasMoving = false;
-//      }
-//    }
-//    if (GoFor && (millis() - timer_goForward >= 5000)) flagZeroGate = true;
-    spdX = angle_gate_ball * KPX + KDX * (angle_gate_ball - angle_gate_ball_old);
-    angle_gate_ball_old = angle_gate_ball;
+  float delta = lead_to_degree_borders(abs_ball_angle - angle_gate_ball_old);
+  abs_ball_angle_old = abs_ball_angle;
+  if (!flagZeroGate) {
+    if (abs(delta) >= 15) {
+      GoFor = false;
+      wasMoving = true;
+    }
+    else {
+      GoFor = true;
+      if (wasMoving) {
+        timer_goForward = millis();
+        wasMoving = false;
+      }
+    }
+    if (GoFor && (millis() - timer_goForward >= 5000)) flagZeroGate = true;
+    if (abs(x) >= 31) spdX = angle_gate_ball * KPX2 + KDX * (angle_gate_ball - angle_gate_ball_old);
+    else spdX = angle_gate_ball * KPX + KDX * (angle_gate_ball - angle_gate_ball_old);
     /*if (x >= 27 && x <= 33)
       spdY = float(YzeroFront2 - y) * KPY2;
       else if (x >= -20 && x <= -25)
@@ -79,7 +80,7 @@ void tactic() {//ворота ->мяч
     spdGLK = 103 + sqrt(spdX * spdX + spdY * spdY);
 
     alphaGLK = lead_to_degree_borders(90 - atan2(spdY, spdX) * 180.0 / PI);
-    if (abs(x) >= 32) {
+    if (abs(x) >= 34) {
       if (x > 0) goAngle(-90 - corAng, 0 - corAng, 107);
       else goAngle(90 - corAng, 0 - corAng, 107);
     }
@@ -91,8 +92,8 @@ void tactic() {//ворота ->мяч
         goAngle(0, 0, 0);
       }
     }
-  //}
-  /*else {
+  }
+  else {
     if (!lastFlagZeroGate) {
       timer_goForward2 = millis();
     }
@@ -101,5 +102,5 @@ void tactic() {//ворота ->мяч
       striker();
     }
   }
-  lastFlagZeroGate = flagZeroGate;*/
+  lastFlagZeroGate = flagZeroGate;
 }

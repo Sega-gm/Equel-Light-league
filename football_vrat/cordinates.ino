@@ -37,7 +37,7 @@ void coordinates() {
     forward_angle = yel_angle;//blue_angle
     backward_angle = blue_angle;//yel_angle
   }
-
+  if(forward_angle == 0 && forward_dist == 0) forward_angle = 0;
   abs_ball_angle = lead_to_degree_borders(ball_cam_angle + corAng);
   abs_forward_angle = lead_to_degree_borders(forward_angle + corAng);
   abs_backward_angle = lead_to_degree_borders(backward_angle + corAng);
@@ -47,47 +47,47 @@ void coordinates() {
 
   y_forward =  230 - forward_dist * cosf(abs_forward_angle * DEG2RAD);
   y_backward = -backward_dist * cosf(abs_backward_angle * DEG2RAD);
-  //if (flagZeroGate == false) {
+  if (flagZeroGate == false) {
     Correct_coef = (backward_dist) / (2 * 230);
     x = (x_backward * (1 - Correct_coef));
     y = (y_backward * (1 - Correct_coef));
- // }
-//  else {
-//    if ((forward_dist == 0 || backward_dist < 100) && backward_dist != 0) {
-//      Correct_coef = (backward_dist) / (2 * 220);
-//      x = (x_backward * (1 - Correct_coef));
-//      y = (y_backward * (1 - Correct_coef));
-//      //left_X_dop =
-//      flagOneGate = true;
-//      Serial.println("back");
-//    }
-//    else if ((backward_dist == 0 || forward_dist < 100) && forward_dist != 0) {
-//      Correct_coef = (forward_dist) / (2 * 220);
-//      x = (x_forward * (1 - Correct_coef));
-//      y = (y_forward * (1 - Correct_coef));
-//
-//      flagOneGate = true;
-//      Serial.println("for");
-//    }
-//    else {
-//      Correct_coef = (backward_dist - forward_dist) / (2 * (forward_dist + backward_dist));
-//      x = (x_forward * Correct_coef) + (x_backward * (1 - Correct_coef));
-//      y = (y_forward * Correct_coef) + (y_backward * (1 - Correct_coef));
-//      flagOneGate = false;
-//      Serial.println(" 2gate ");
-//    }
-//    if (flagOneGate == false) {
-//      right_out = right_out2G;
-//      left_out = left_out2G;
-//      //Serial.println(" 2gate ");
-//    }
-//    else {
-//      right_out = right_out1G;
-//      left_out = left_out1G;
-//      //Serial.println(" 1gate ");
-//
-//    }
-//  }
+  }
+  else {
+    if ((forward_dist == 0 || backward_dist < 100) && backward_dist != 0) {
+      Correct_coef = (backward_dist) / (2 * 220);
+      x = (x_backward * (1 - Correct_coef));
+      y = (y_backward * (1 - Correct_coef));
+      //left_X_dop =
+      flagOneGate = true;
+      Serial.println("back");
+    }
+    else if ((backward_dist == 0 || forward_dist < 100) && forward_dist != 0) {
+      Correct_coef = (forward_dist) / (2 * 220);
+      x = (x_forward * (1 - Correct_coef));
+      y = (y_forward * (1 - Correct_coef));
+
+      flagOneGate = true;
+      Serial.println("for");
+    }
+    else {
+      Correct_coef = (backward_dist - forward_dist) / (2 * (forward_dist + backward_dist));
+      x = (x_forward * Correct_coef) + (x_backward * (1 - Correct_coef));
+      y = (y_forward * Correct_coef) + (y_backward * (1 - Correct_coef));
+      flagOneGate = false;
+      Serial.println(" 2gate ");
+    }
+    if (flagOneGate == false) {
+      right_out = right_out2G;
+      left_out = left_out2G;
+      //Serial.println(" 2gate ");
+    }
+    else {
+      right_out = right_out1G;
+      left_out = left_out1G;
+      //Serial.println(" 1gate ");
+
+    }
+  }
 }
 void outs() {
   if ((right_out <= x) || (left_out >= x) || (backward_out >= backward_dist && backward_dist != 0) || (forward_out >= forward_dist && forward_dist != 0)) { //
