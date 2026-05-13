@@ -16,14 +16,14 @@ Adafruit_BNO055 bno = Adafruit_BNO055(-1, 0x29, &Wire);
 #define KC 0.0001//Куб.коэф.
 
 
-const int right_out2G = 80;
-const int left_out2G = -65;
-const int right_out1G = 55;
+const int right_out2G = 70;
+const int left_out2G = -80;
+const int right_out1G = 50;
 const int left_out1G = -55;
 int right_out = 0;
 int left_out = 0;
 const int forward_out = 37;
-const int backward_out = 40;
+const int backward_out = 37;
 
 //Порты управления цопами
 #define ADDR_P1 29
@@ -84,7 +84,7 @@ bool Dribler = true;//true false
   5-проверка солинойда
   6-проверка дриблера
   7-проверка дальномеров
-  8-координаты
+   8-координаты
 */
 
 
@@ -161,6 +161,7 @@ byte switchT_C;
 float ball_cam_dist;
 bool flagStart = true;
 int spdSHR;
+int spdMinl; 
 
 int State = 0;
 /*
@@ -375,7 +376,8 @@ void loop() {
   //  Serial.println("1241");
 #elif OTLADKA==6
   updates();
-  if (ball_cam_dist <= 20) {
+  dribler(1615);
+  /*if (ball_cam_dist <= 20) {
     dribler(1615);
     driblerON = true;
   }
@@ -383,7 +385,7 @@ void loop() {
   else if (ball_retention <= 3 || (driblerON == true && ball_cam_dist == 0)) {
     dribler(1620);
   }
-  else if (ball_cam_dist > 20 && ball_cam_dist != 0) {dribler(0);driblerON = false;}
+  else if (ball_cam_dist > 20 && ball_cam_dist != 0) {dribler(0);driblerON = false;}*/
 #elif OTLADKA==7
   readSensors();
   Serial.print("ball_retention");

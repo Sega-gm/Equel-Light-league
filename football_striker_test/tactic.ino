@@ -88,12 +88,11 @@
 void tactic() {
   if (flagOut == false) {
     if (flagBadZone == true) {
-      if (x < 0) goAngle(180, corAng, 110);
-      else goAngle(-180, corAng, 110);
+      goAngle(180, corAng, 115);
     }
     else if (ball_retention <= 3) goAngle(0, forward_angle, 110);
     else if (abs(lead_to_degree_borders(ball_cam_angle)) <= 10) {
-      goAngle(ball_cam_angle, forward_angle, 110);
+      goAngle(ball_cam_angle, forward_angle, 115);
       //Serial.println(" for1 ");
     }
     else {
@@ -101,21 +100,14 @@ void tactic() {
       if (ball_cam_dist > 35) {
         //Serial.println(" Dist ");
 
-        goAngle(ball_cam_angle, forward_angle, 110);
+        goAngle(ball_cam_angle, forward_angle, 115);
       }
       else {
-        //if(ball_cam_dist < 12) goAngle(ball_cam_angle, ball_cam_angle, 105);
-        if (lead_to_degree_borders(ball_cam_angle) < 0) {//Serial.println(" Left ");
-          //if(flagShortBall == true)
-          //  goAngle(lead_to_degree_borders(ball_cam_angle + exponential_detour(lead_to_degree_borders(ball_cam_angle), ball_cam_dist, 0.65, 0.35, 0.45, 0.8)), ball_cam_angle, 105);
-          //else 
-            goAngle(lead_to_degree_borders(ball_cam_angle + exponential_detour(lead_to_degree_borders(ball_cam_angle), ball_cam_dist, 0.65, 0.35, 0.45, 0.8)), forward_angle, 107);//0.61, 0.35, 0.45, 0.8
+        if (lead_to_degree_borders(ball_cam_angle) < 0) {//Serial.println(" Left "); 
+            goAngle(lead_to_degree_borders(ball_cam_angle + exponential_detour(lead_to_degree_borders(ball_cam_angle), ball_cam_dist, 0.65, 0.35, 0.45, 0.8)), forward_angle, 110);//0.61, 0.35, 0.45, 0.8
         }
         else { //Serial.println(" Right ");
-          //if(flagShortBall == true)
-          //  goAngle(lead_to_degree_borders(ball_cam_angle - exponential_detour(lead_to_degree_borders(ball_cam_angle), ball_cam_dist, 0.57, 0.35, 0.45, 0.8)), ball_cam_angle, 105);//0.63, 0.35, 0.45, 0.8
-          //else 
-            goAngle(lead_to_degree_borders(ball_cam_angle - exponential_detour(lead_to_degree_borders(ball_cam_angle), ball_cam_dist, 0.57, 0.35, 0.45, 0.8)), forward_angle, 107);
+            goAngle(lead_to_degree_borders(ball_cam_angle - exponential_detour(lead_to_degree_borders(ball_cam_angle), ball_cam_dist, 0.57, 0.35, 0.45, 0.8)), forward_angle, 110);
         }
       }
     }
@@ -130,7 +122,7 @@ void tactic() {
       driblerON = true;
       flagKick = true;
     }
-    else if (ball_cam_dist <= 25) dribler(1617);
+    else if (ball_cam_dist <= 25) dribler(1615);
     else dribler(0);
   }
   else if (flagOut == true) {

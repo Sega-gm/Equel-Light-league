@@ -26,16 +26,7 @@ void kick()
   //Serial.println("111");//4tc - 2
   
 }
-void KickPosition(){
-  if (abs(x) >= 40 && y >= 170 && ball_retention <= 3){
-    flagKickPosition = false;
-    flagBadZone = true;
-  }
-  else if (forward_dist > 65 || abs(abs_forward_angle) > 70){ flagKickPosition = false; flagBadZone = false;}
-  else {flagKickPosition = true; flagBadZone = false;}
-    
-  
-}
+
 void kick_Del(){
   if (kickDel && (millis() - timer_kick2 >= 200)){
     timer_kick2 = 0;

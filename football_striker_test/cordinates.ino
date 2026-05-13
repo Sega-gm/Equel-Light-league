@@ -1,6 +1,6 @@
 void coordinates() {
   
-  int sideGame = 0;
+  int sideGame = 1;
   if (sideGame == 1) {
     forward_dist = blue_dist ;//blue_dist
     backward_dist = yel_dist;//yel_dist
@@ -56,6 +56,16 @@ void coordinates() {
     //Serial.println(" 1gate ");
     
   }
+}
+void KickPosition(){
+  if (abs(x) >= 40 && y >= 170 && ball_retention <= 3){
+    flagKickPosition = false;
+    flagBadZone = true;
+  }
+  else if (forward_dist > 80 || abs(abs_forward_angle) > 70){ flagKickPosition = false; flagBadZone = false;}
+  else {flagKickPosition = true; flagBadZone = false;}
+    
+  
 }
 void outs() {
   if ((right_out <= x) || (left_out >= x) || (backward_out >= backward_dist && backward_dist != 0) || (forward_out >= forward_dist && forward_dist != 0)) { //
