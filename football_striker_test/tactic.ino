@@ -18,10 +18,10 @@ void tactic() {
       }
       else {
         if (lead_to_degree_borders(ball_cam_angle) < 0) {//Serial.println(" Left ");
-          goAngle(lead_to_degree_borders(ball_cam_angle + exponential_detour(lead_to_degree_borders(ball_cam_angle), ball_cam_dist, 0.62, 0.38, 0.45, 0.8)), abs_forward_angle, 105);//0.61, 0.35, 0.45, 0.8
+          goAngle(lead_to_degree_borders(ball_cam_angle + exponential_detour(lead_to_degree_borders(ball_cam_angle), ball_cam_dist, 0.62, 0.365, 0.45, 0.8)), abs_forward_angle, 107);//0.61, 0.35, 0.45, 0.8
         }
         else { //Serial.println(" Right ");
-          goAngle(lead_to_degree_borders(ball_cam_angle - exponential_detour(lead_to_degree_borders(ball_cam_angle), ball_cam_dist, 0.63, 0.35, 0.45, 0.8)), abs_forward_angle, 105);
+          goAngle(lead_to_degree_borders(ball_cam_angle - exponential_detour(lead_to_degree_borders(ball_cam_angle), ball_cam_dist, 0.63, 0.35, 0.45, 0.8)), abs_forward_angle, 107);
         }
       }
     }
@@ -36,7 +36,7 @@ void tactic() {
       driblerON = true;
       flagKick = true;
     }
-    else if (ball_cam_dist <= 25) dribler(1613);
+    else if (ball_cam_dist <= 25) dribler(1614);
     else dribler(0);
   }
   else if (flagOut == true) {
