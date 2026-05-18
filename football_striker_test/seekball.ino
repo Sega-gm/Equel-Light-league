@@ -1,16 +1,17 @@
-void switch_ts_or_cam() {
-  if(ball_cam_dist  == 0 && ball_ts_dist == 0){
-    ball_dist = 0;
-  }
-  else if (switchT_C == 1){
-    ball_angle = ball_ts_angle;
-    ball_dist = ball_ts_dist;
-  }
-  else if (switchT_C == 2){
-    ball_angle = ball_cam_angle;
-    ball_dist = ball_cam_dist;
-  }
-}
+
+//void switch_ts_or_cam() {
+//  if(ball_cam_dist  == 0 && ball_ts_dist == 0){
+//    ball_dist = 0;
+//  }
+//  else if (switchT_C == 1){
+//    ball_angle = ball_ts_angle;
+//    ball_dist = ball_ts_dist;
+//  }
+//  else if (switchT_C == 2){
+//    ball_angle = ball_cam_angle;
+//    ball_dist = ball_cam_dist;
+//  }
+//}
 double convert_dist(double max_dist, double dist)
 {
   _data = (max_dist-dist) / max_dist + 1;
@@ -43,13 +44,13 @@ int16_t exponential_detour(double ball_angle, double distance, double k1_angle, 
   
   return _data;//возращает угол на который надо ехать
 }
-void GoBall_short(){
-  if(ball_retention > 5 && ball_cam_dist <= 10 && abs(lead_to_degree_borders(ball_cam_angle)) <= 5){
-    flagShortBall = true;
-    Priority_Angle = ball_cam_angle;
-  }
-  else{
-    flagShortBall = false;
-    Priority_Angle = forward_angle;
-  }
-}
+//void GoBall_short(){
+//  if(ball_retention > 5 && ball_cam_dist <= 10 && abs(lead_to_degree_borders(ball_cam_angle)) <= 5){
+//    flagShortBall = true;
+//    Priority_Angle = ball_cam_angle;
+//  }
+//  else{
+//    flagShortBall = false;
+//    Priority_Angle = forward_angle;
+//  }
+//}

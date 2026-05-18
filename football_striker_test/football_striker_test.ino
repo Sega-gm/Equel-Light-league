@@ -14,17 +14,24 @@ Adafruit_BNO055 bno = Adafruit_BNO055(-1, 0x29, &Wire);
 #define KP 0.8  //Пропрц.коэф.
 #define KD 20.0 //Диф.коэф. 
 #define KC 0.0001//Куб.коэф.
+#define OTLADKA 0
 
 
-const int right_out2G = 70;
-const int left_out2G = -80;
-const int right_out1G = 50;
-const int left_out1G = -55;
+int right_out2G = 100;
+int left_out2G = -55;
+int right_out1G = 80;
+int left_out1G = -45;
+
 int right_out = 0;
 int left_out = 0;
-const int forward_out = 37;
-const int backward_out = 37;
 
+int forward_out = 40;
+int backward_out = 35;
+
+int abs_backward_out = 35;
+int abs_forward_out = 0;
+
+float abs_ball_angle;
 //Порты управления цопами
 #define ADDR_P1 29
 #define ADDR_P2 27
@@ -52,27 +59,26 @@ const int backward_out = 37;
 //led 30 24 22
 //Порты управления моторами
 
-//#define M1_1 10
-//#define M1_2 12
-//#define M2_1 9
-//#define M2_2 11
-//#define M3_1 6
-//#define M3_2 8
-//#define M4_1 5
-//#define M4_2 7
-
-#define M1_1 12
-#define M1_2 10
-#define M2_1 11
-#define M2_2 9
-#define M3_1 8
-#define M3_2 6
+#define M1_1 10
+#define M1_2 12
+#define M2_1 9
+#define M2_2 11
+#define M3_1 6
+#define M3_2 8
 #define M4_1 5
 #define M4_2 7
+
+//#define M1_1 12
+//#define M1_2 10
+//#define M2_1 11
+//#define M2_2 9
+//#define M3_1 8
+//#define M3_2 6
+//#define M4_1 5
+//#define M4_2 7
 //Порт управления солиноидом
 #define pinsolin 31
 
-#define OTLADKA 0
 
 bool Dribler = true;//true false
 /*Макрос отладки
@@ -96,8 +102,11 @@ uint8_t fifoBuffer[45];// буфер
 uint32_t timer;
 uint32_t timer_kick;
 uint32_t timer_kick2;
+uint32_t placementTimer = 0;
+const uint32_t PLACEMENT_ALIGN_MS = 4000;
 float angleGyro;
 float errAngleGyro;
+bool flagST = false;
 float corAng;
 float abs_angle;
 byte ball_retention;
@@ -141,6 +150,7 @@ int OneGate_Out_KofX;
 
 float out_angle;
 bool flagOne = false;
+bool flagOutStart = false;
 bool kickDel = false;
 bool flagOneGate = false;
 bool flagOut = false;
@@ -149,6 +159,7 @@ bool flagKickPosition = false;
 bool driblerON = false;
 bool flagBadZone = false;
 bool flagShortBall = false;
+bool flagPlacement = false;
 const int ir_addr3[32] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 31, 30, 29, 28, 24, 25, 26, 27};
 int ball_data[32];
 float d_alpha = 11.25;
@@ -159,9 +170,10 @@ float alphaGLK;
 float ball_cam_angle;
 byte switchT_C;
 float ball_cam_dist;
+bool flagOff = true;
 bool flagStart = true;
 int spdSHR;
-int spdMinl; 
+int spdMinl;
 
 int State = 0;
 /*
@@ -296,148 +308,157 @@ void setup() {
 }
 
 void loop() {
-  while (flagStart == true) {
-    goAngle(0, 0, 0);
-    dribler(0);
-    gyro();
-    errAngleGyro = angleGyro;
+
+  while (true) {
     digitalWrite(22, HIGH);
     digitalWrite(24, LOW);
+    
+    //errAngleGyro = angleGyro;
+
     if (digitalRead(BUT2) == 0) {
-      Serial.println("Start game");
-      flagStart = false;
-      break;
+      //Serial.println("Start game");
+      //flagStart = false;
+      flagOutStart = false;
+      flagOff = false;
+      flagST = true;
+
     }
-  }
-
-
-  digitalWrite(22, HIGH);
-  digitalWrite(24, LOW);
+    if (digitalRead(BUT3) == 0) {
+      //recalibrateGyro();
+      //flagPlacement = true;
+      //flagStart = true;
+      placementTimer = millis();
+      //flagOut = false;
+      flagOutStart = true;
+      flagOff = true;
+    }
+    if (flagOutStart == true) {
+      gyro();
+      corAng = angleGyro;
+    }
 #if OTLADKA==0
-  digitalWrite(LED_BUILTIN, millis() % 1000 > 500);
-  updates();
-  tactic();
+
+      digitalWrite(LED_BUILTIN, millis() % 1000 > 500);
+      updates();
+      tactic();
 
 
-  //outs();
-
-  //
+    //
 #elif OTLADKA==1
-  goAngle(0, 0, 100);
-  //  motor1.setSpeeds(150); //m1
-  //  motor2.setSpeeds(150); //m2
-  //  motor3.setSpeeds(150); //m3
-  //  motor4.setSpeeds(150); // m4
+    updates();
+    goAngle(0, 0, 100);
+    //  motor1.setSpeeds(150); //m1
+    //  motor2.setSpeeds(150); //m2
+    //  motor3.setSpeeds(150); //m3
+    //  motor4.setSpeeds(150); // m4
 #elif OTLADKA==2
-  corAng = lead_to_degree_borders(angleGyro - errAngleGyro);
-  gyro();
-  Serial.print("corAng\t  ");
-  Serial.print(corAng);//180-
-  Serial.print("  angleGyro  ");
-  Serial.print(angleGyro);//180-
-  Serial.print("  errAngleGyro\t  ");
-  Serial.print(errAngleGyro);//180-
-  Serial.println(" ");
+    corAng = lead_to_degree_borders(angleGyro - errAngleGyro);
+    gyro();
+    Serial.print("corAng\t  ");
+    Serial.print(corAng);//180-
+    Serial.print("  angleGyro  ");
+    Serial.print(angleGyro);//180-
+    Serial.print("  errAngleGyro\t  ");
+    Serial.print(errAngleGyro);//180-
+    Serial.println(" ");
 #elif OTLADKA==3
-  //Camera();
-  updates();
-  Serial.print("yel_angle\t  ");
-  Serial.print(yel_angle);
-  Serial.print("  ||  ");
-  Serial.print(yel_dist);
-  Serial.print("  ||  ");
-  Serial.print(ball_cam_angle);
-  Serial.print("  ||  ");
-  Serial.print(ball_cam_dist);
-  Serial.print("  ||  ");
-  Serial.print(blue_angle);
-  Serial.print("  ||  ");
-  Serial.print(blue_dist);
-  Serial.println(" ");//180-
+    //Camera();
+    updates();
+    Serial.print("yel_angle\t  ");
+    Serial.print(yel_angle);
+    Serial.print("  ||  ");
+    Serial.print(yel_dist);
+    Serial.print("  ||  ");
+    Serial.print(ball_cam_angle);
+    Serial.print("  ||  ");
+    Serial.print(ball_cam_dist);
+    Serial.print("  ||  ");
+    Serial.print(blue_angle);
+    Serial.print("  ||  ");
+    Serial.print(blue_dist);
+    Serial.println(" ");//180-
 #elif OTLADKA==4
-  data_tcops();
-  for (int i = 0; i < 32; i++)
-  {
-    Serial.print(ball_data[i]);//4tc - 2
+    data_tcops();
+    for (int i = 0; i < 32; i++)
+    {
+      Serial.print(ball_data[i]);//4tc - 2
+      Serial.print(" ");
+    }
+    Serial.println(" ");
+    //Serial.print(ball_ts_distance);
     Serial.print(" ");
-  }
-  Serial.println(" ");
-  //Serial.print(ball_ts_distance);
-  Serial.print(" ");
-  Serial.println(ball_ts_angle);
+    Serial.println(ball_ts_angle);
 
 #elif OTLADKA==5
-  if (millis() - timer_kick >= 5000) {
-    kick();
-    timer_kick = millis(); // обязательно обновить, иначе kick будет вызываться постоянно
-  }
-  kick_Del();
-  //  Serial.print("  ");
-  //  Serial.println("1241");
+    if (millis() - timer_kick >= 5000) {
+      kick();
+      timer_kick = millis(); // обязательно обновить, иначе kick будет вызываться постоянно
+    }
+    kick_Del();
+    //  Serial.print("  ");
+    //  Serial.println("1241");
 #elif OTLADKA==6
-  updates();
-  dribler(1615);
-  /*if (ball_cam_dist <= 20) {
-    dribler(1615);
-    driblerON = true;
-  }
-  
-  else if (ball_retention <= 3 || (driblerON == true && ball_cam_dist == 0)) {
+    updates();
     dribler(1620);
-  }
-  else if (ball_cam_dist > 20 && ball_cam_dist != 0) {dribler(0);driblerON = false;}*/
+    /*if (ball_cam_dist <= 20) {
+      dribler(1615);
+      driblerON = true;
+      }
+
+      else if (ball_retention <= 3 || (driblerON == true && ball_cam_dist == 0)) {
+      dribler(1620);
+      }
+      else if (ball_cam_dist > 20 && ball_cam_dist != 0) {dribler(0);driblerON = false;}*/
 #elif OTLADKA==7
-  readSensors();
-  Serial.print("ball_retention");
-  Serial.println(ball_retention);
-  //  Serial.print("Right_dist");
-  //  Serial.print(Right_dist);
-  //  Serial.print("Forward_dist");
-  //  Serial.print(Forward_dist);
-  //  Serial.print("Back_dist");
-  //  Serial.println(Back_dist);
+    readSensors();
+    Serial.print("ball_retention");
+    Serial.println(ball_retention);
+    //  Serial.print("Right_dist");
+    //  Serial.print(Right_dist);
+    //  Serial.print("Forward_dist");
+    //  Serial.print(Forward_dist);
+    //  Serial.print("Back_dist");
+    //  Serial.println(Back_dist);
 #elif OTLADKA==8
-  updates();
-  Serial.print(corAng);
-  Serial.print("corAng\t  ");
-  Serial.print(abs_forward_angle);
-  Serial.print("  ");
-  Serial.print(abs_backward_angle);
-  Serial.print("  ||  ");
-  //  Serial.print(yel_angle);
-  //  Serial.print("  ");
-  //  Serial.print(blue_angle);
-  //  Serial.print("  ||  ");
-  Serial.print(forward_dist);
-  Serial.print("  ");
-  Serial.print(backward_dist);
-  Serial.print("  ||  ");
-  Serial.print(x_backward);
-  Serial.print("  ");
-  Serial.print(x_forward);
-  Serial.print("  ||  ");
-  Serial.print(y_backward);
-  Serial.print("  ");
-  Serial.print(y_forward);
-  Serial.print("  ||  ");
-  Serial.print(Correct_coef);
-  Serial.print("  ");
-  Serial.print(x);
-  Serial.print("  ");
-  Serial.print(y);
-  //  Serial.print("  ");
-  //  Serial.print("  ||  ");
-  //  Serial.print(Correct_coef);
-  //  Serial.print("  ");
-  //  Serial.print(xx);
-  //  Serial.print("  ");
-  //  Serial.print(yy);
-  Serial.println("  ");
+    updates();
+    Serial.print(corAng);
+    Serial.print("corAng\t  ");
+    Serial.print(abs_forward_angle);
+    Serial.print("  ");
+    Serial.print(abs_backward_angle);
+    Serial.print("  ||  ");
+    //  Serial.print(yel_angle);
+    //  Serial.print("  ");
+    //  Serial.print(blue_angle);
+    //  Serial.print("  ||  ");
+    Serial.print(forward_dist);
+    Serial.print("  ");
+    Serial.print(backward_dist);
+    Serial.print("  ||  ");
+    Serial.print(x_backward);
+    Serial.print("  ");
+    Serial.print(x_forward);
+    Serial.print("  ||  ");
+    Serial.print(y_backward);
+    Serial.print("  ");
+    Serial.print(y_forward);
+    Serial.print("  ||  ");
+    Serial.print(Correct_coef);
+    Serial.print("  ");
+    Serial.print(x);
+    Serial.print("  ");
+    Serial.print(y);
+    //  Serial.print("  ");
+    //  Serial.print("  ||  ");
+    //  Serial.print(Correct_coef);
+    //  Serial.print("  ");
+    //  Serial.print(xx);
+    //  Serial.print("  ");
+    //  Serial.print(yy);
+    Serial.println("  ");
 #endif
 
-  if (digitalRead(BUT3) == 0 && flagStart == false) {
-    
-    flagStart = true;
-    Serial.println("Stop");
+
+    //delay(200);  // антидребезг
   }
 }
