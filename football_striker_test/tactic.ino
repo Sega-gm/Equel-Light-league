@@ -32,11 +32,11 @@ void tactic() {
       flagOne = false;
     }
     if (ball_cam_dist <= 14 && ball_retention <= 3) {
-      dribler(1618);
+      dribler(1614);//1617
       driblerON = true;
       flagKick = true;
     }
-    else if (ball_cam_dist <= 25) dribler(1614);
+    else if (ball_cam_dist <= 18) dribler(1614);
     else dribler(0);
   }
   else if (flagOut == true) {

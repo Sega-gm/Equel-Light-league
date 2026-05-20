@@ -399,7 +399,7 @@ void loop() {
     //  Serial.println("1241");
 #elif OTLADKA==6
     updates();
-    dribler(1620);
+    dribler(1614);
     /*if (ball_cam_dist <= 20) {
       dribler(1615);
       driblerON = true;

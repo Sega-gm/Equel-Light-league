@@ -7,13 +7,13 @@ void coordinates() {
     forward_angle = blue_angle;//blue_angle
     backward_angle = yel_angle;//yel_angle
     
-    right_out2G = 70;
+    right_out2G = 67;
     left_out2G = -75;
     right_out1G = 48;
     left_out1G = -65;
     
     forward_out = 45;
-    backward_out = 45;
+    backward_out = 40;
     
     abs_forward_out = 160;
     abs_backward_out = 34;
